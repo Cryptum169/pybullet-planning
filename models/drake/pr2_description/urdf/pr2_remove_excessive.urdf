@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+
+<robot name="pr2">
+  <!-- <link name="world_link"/>
+  <link name="base_link_0"/>
+  <link name="base_link_1"/> -->
+  <link name="base_link">
+    <inertial>
+      <mass value="116.0"/>
+      <origin xyz="-0.061 0.0 0.293"/>
+      <inertia ixx="5.652232699207" ixy="-0.009719934438" ixz="1.293988226423" iyy="5.669473158652" iyz="-0.007379583694" izz="3.683196351726"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/base_v0/base.obj"/>
+      </geometry>
+      <material name="White"/>
+    </visual>
+    <collision group="non_gripper">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/base_v0/base_L.obj"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="torso_lift_joint" type="prismatic">
+    <axis xyz="0 0 1"/>
+    <limit effort="10000" lower="0.0" upper="0.31" velocity="0.013"/>
+    <!-- alpha tested velocity and effort limits -->
+    <safety_controller k_position="100" k_velocity="2000000" soft_lower_limit="0.0115" soft_upper_limit="0.305"/>
+    <!-- hold both reference_position and upper/lower for tick-tock, remove reference_positiion after verifying upper/lower works with calibration controllers.  if search velocity in pr2_calibration_controllers.yaml is +, the reference_position is rising, if - then it is falling -->
+    <calibration falling="0.00536" reference_position="0.00536"/>
+    <dynamics damping="20000.0"/>
+    <!-- strictly tuned for sim only right now -->
+    <origin rpy="0 0 0" xyz="-0.05 0 0.739675"/>
+    <parent link="base_link"/>
+    <child link="torso_lift_link"/>
+  </joint>
+  <link name="torso_lift_link">
+    <inertial>
+      <mass value="36.248046"/>
+      <origin xyz="-0.1 0 -0.0885"/>
+      <inertia ixx="2.771653750257" ixy="0.004284522609" ixz="-0.160418504506" iyy="2.510019507959" iyz="0.029664468704" izz="0.526432355569"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/torso_v0/torso_lift.obj"/>
+      </geometry>
+      <material name="Grey2"/>
+    </visual>
+    <collision group="non_gripper" name="torso_lift_collision">
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/torso_v0/torso_lift_L.obj"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="l_shoulder_pan_joint" type="revolute">
+    <axis xyz="0 0 1"/>
+    <origin rpy="0 0 0" xyz="0.0 0.188 0.0"/>
+    <!-- transform from parent link to this joint frame -->
+    <parent link="torso_lift_link"/>
+    <child link="l_shoulder_pan_link"/>
+    <limit effort="30" lower="-0.714601836603" upper="2.2853981634" velocity="2.088"/>
+    <!-- alpha tested velocity and effort limits -->
+    <dynamics damping="10.0"/>
+    <safety_controller k_position="100" k_velocity="10" soft_lower_limit="-0.564601836603" soft_upper_limit="2.1353981634"/>
+    <!-- joint angle when the rising or the falling flag is activated on PR2 -->
+    <!-- hold both reference_position and upper/lower for tick-tock, remove reference_positiion after verifying upper/lower works with calibration controllers.  if search velocity in pr2_calibration_controllers.yaml is +, the reference_position is rising, if - then it is falling -->
+    <calibration reference_position="0.785398163397" rising="0.785398163397"/>
+  </joint>
+  <link name="l_shoulder_pan_link">
+    <inertial>
+      <mass value="25.799322"/>
+      <origin rpy="0 0 0" xyz="-0.001201 0.024513 -0.098231"/>
+      <inertia ixx="0.866179142480" ixy="-0.06086507933" ixz="-0.12118061183" iyy="0.87421714893" iyz="-0.05886609911" izz="0.27353821674"/>
+    </inertial>
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="../meshes/shoulder_v0/shoulder_pan.obj"/>
+      </geometry>
+      <material name="Blue"/>
+    </visual>
+    <collision group="non_gripper">
+      <origin rpy="0 0 0" xyz="0.0 0 0.0"/>
+      <geometry>
+        <mesh filename="../meshes/shoulder_v0/shoulder_pan.obj"/>
+      </geometry>
+    </collision>
+  </link>
+</robot>
