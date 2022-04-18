@@ -46,6 +46,8 @@ def main(teleport : bool):
         pr2 = load_model(pr2_urdf, fixed_base=True)
     dump_body(pr2)
 
+    
+
     # Set Arm Positions
     arm_start = np.array(SIDE_HOLDING_LEFT_ARM)
     arm_goal = np.array(TOP_HOLDING_LEFT_ARM)
@@ -64,25 +66,24 @@ def main(teleport : bool):
     set_joint_positions(pr2, torso_joints, [0.2])
 
     wait_if_gui(f"Short horizon move to {arm_goal}")
-    # set_joint_positions(pr2, left_joints, arm_goal)
+    set_joint_positions(pr2, left_joints, arm_goal)
     # control(pr2, left_joints, [arm_goal])
 
-    tolerance = 1e-3
-    timeout = INF
-    for v in [arm_goal]:
-        assert(len(left_joints) == len(v))
-        dt = get_time_step()
-        time_elapsed = 0.
-        positions_before = get_joint_positions(pr2, left_joints)
-        control_joints(pr2, left_joints, v)
-        positions = get_joint_positions(pr2, left_joints)
-        print(f"before: {positions_before}, {positions}")
+    # tolerance = 1e-3
+    # timeout = INF
+    # for v in [arm_goal]:
+    #     assert(len(left_joints) == len(v))
+    #     dt = get_time_step()
+    #     time_elapsed = 0.
+    #     positions_before = get_joint_positions(pr2, left_joints)
+    #     control_joints(pr2, left_joints, v)
+    #     positions = get_joint_positions(pr2, left_joints)
+    #     print(f"before: {positions_before}, {positions}")
 
-        while not all_close(positions, v, atol=tolerance) and (time_elapsed < timeout):
-            time_elapsed += dt
-            positions = get_joint_positions(pr2, left_joints)
-        #     yield positions
-
+    #     while not all_close(positions, v, atol=tolerance) and (time_elapsed < timeout):
+    #         time_elapsed += dt
+    #         positions = get_joint_positions(pr2, left_joints)
+    #     #     yield positions
 
     open_arm(pr2, 'left')
 
